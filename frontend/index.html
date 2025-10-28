@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Churn Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 50px; }
+        .container { background: #fff; padding: 20px; border-radius: 8px; width: 400px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+        input, select { width: 100%; padding: 8px; margin: 5px 0; }
+        label { font-weight: bold; margin-top: 10px; display: block; }
+        button { padding: 10px; width: 100%; background: #007BFF; color: white; border: none; border-radius: 5px; margin-top: 15px; }
+        .result { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Churn Prediction</h2>
+        <form id="predictForm">
+
+            <label>gender (0=Female, 1=Male)</label>
+            <input type="number" name="gender" required>
+
+            <label>SeniorCitizen (0=No, 1=Yes)</label>
+            <input type="number" name="SeniorCitizen" required>
+
+            <label>Partner (0=No, 1=Yes)</label>
+            <input type="number" name="Partner" required>
+
+            <label>Dependents (0=No, 1=Yes)</label>
+            <input type="number" name="Dependents" required>
+
+            <label>tenure (months)</label>
+            <input type="number" name="tenure" required>
+
+            <label>PhoneService (0=No, 1=Yes)</label>
+            <input type="number" name="PhoneService" required>
+
+            <label>MultipleLines (0=No, 1=Yes)</label>
+            <input type="number" name="MultipleLines" required>
+
+            <label>InternetService (0=None, 1=DSL, 2=Fiber)</label>
+            <input type="number" name="InternetService" required>
+
+            <label>OnlineSecurity (0=No, 1=Yes)</label>
+            <input type="number" name="OnlineSecurity" required>
+
+            <label>OnlineBackup (0=No, 1=Yes)</label>
+            <input type="number" name="OnlineBackup" required>
+
+            <label>DeviceProtection (0=No, 1=Yes)</label>
+            <input type="number" name="DeviceProtection" required>
+
+            <label>TechSupport (0=No, 1=Yes)</label>
+            <input type="number" name="TechSupport" required>
+
+            <label>StreamingTV (0=No, 1=Yes)</label>
+            <input type="number" name="StreamingTV" required>
+
+            <label>StreamingMovies (0=No, 1=Yes)</label>
+            <input type="number" name="StreamingMovies" required>
+
+            <label>Contract (0=Month-to-month, 1=One year, 2=Two year)</label>
+            <input type="number" name="Contract" required>
+
+            <label>PaperlessBilling (0=No, 1=Yes)</label>
+            <input type="number" name="PaperlessBilling" required>
+
+            <label>PaymentMethod (0=Electronic check, 1=Mailed check, 2=Bank transfer, 3=Credit card)</label>
+            <input type="number" name="PaymentMethod" required>
+
+            <label>MonthlyCharges</label>
+            <input type="number" step="any" name="MonthlyCharges" required>
+
+            <label>TotalCharges</label>
+            <input type="number" step="any" name="TotalCharges" required>
+
+            <button type="submit">Predict</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const features = Array.from(formData.values()).map(Number);
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ features })
+                });
+                const result = await response.json();
+                document.getElementById('result').innerText = 'Prediction: ' + result.prediction;
+            } catch (err) {
+                console.error("Error making prediction:", err);
+                document.getElementById('result').innerText = 'Error making prediction';
+            }
+        });
+    </script>
+</body>
+</html>
